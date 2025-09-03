@@ -26,18 +26,22 @@ $.fn.flash = function(times, duration) {
 			})
 		(i);
 	}
-	this.prepend("<audio><source src='./sounds/"+randomChosenColour+".mp3' type='audio/mp3'/></audio>");
-	this[0].firstChild.play();
 };
 
 $(document).on("keypress", function(event){
 	if (event.originalEvent.key === "a"){
 		$("."+randomChosenColour).flash();
+		playSound(randomChosenColour);
 	}
 });
 
 $(".btn").click(function(event) {
 	var userChosenColor = event.target.id;
+	playSound(userChosenColor);
 	userChosenPattern.push(userChosenColor);
 	console.log(userChosenPattern);
 });
+
+function playSound(name) {
+	new Audio("./sounds/"+name+".mp3").play();
+}
