@@ -15,6 +15,8 @@ $.fn.flash = function(times, duration) {
 	}
 };
 
+var CHECKSTART = true;
+var level = 0;
 var buttonColours = ["red", "blue", "green", "yellow"];
 var randomChosenColour = buttonColours[nextSequence()];
 
@@ -24,9 +26,12 @@ var userChosenPattern = [];
 gamePattern.push(randomChosenColour);
 
 $(document).on("keypress", function(event){
-	if (event.originalEvent.key === "a"){
+	if (event.originalEvent.key === "a" && CHECKSTART){
+		console.log($(".level-title"));
+		$("h1").text("Level " + level);
 		$("."+randomChosenColour).flash();
 		playSound(randomChosenColour);
+		CHECKSTART = false; 
 	}
 });
 
@@ -50,5 +55,6 @@ function animatePress(currentColour){
 
 function nextSequence(){
     var randomNumber = Math.floor(Math.random()*4);
+	level++;
     return randomNumber;
 }
