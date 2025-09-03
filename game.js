@@ -2,6 +2,7 @@ var buttonColours = ["red", "blue", "green", "yellow"];
 var randomChosenColour = buttonColours[nextSequence()];
 
 var gamePattern = [];
+var userChosenPattern = [];
 
 gamePattern.push(randomChosenColour);
 
@@ -35,3 +36,8 @@ $(document).on("keypress", function(event){
 	}
 });
 
+$(".btn").click(function(event) {
+	var userChosenColor = event.target.id;
+	userChosenPattern.push(userChosenColor);
+	console.log(userChosenPattern);
+});
