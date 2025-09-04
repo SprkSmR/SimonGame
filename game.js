@@ -15,7 +15,7 @@ $.fn.flash = function(times, duration) {
 	}
 };
 
-var CHECKSTART = true;
+var checkStart = true;
 var level = 0;
 var playerClicks = 0;
 var playerInteract = false;
@@ -23,10 +23,11 @@ var buttonColours = ["red", "blue", "green", "yellow"];
 
 var gamePattern = [];
 var userChosenPattern = [];
+var tries = 3;
 
 $(document).on("keypress", function(event){
-	if (event.originalEvent.key === "a" && CHECKSTART){
-		CHECKSTART = false; 
+	if (event.originalEvent.key === "a" && checkStart){
+		checkStart = false; 
 		nextSequence();
 	}
 });
@@ -60,7 +61,7 @@ function animatePress(currentColour){
 }
 
 function nextSequence(){
-	$("h1").text("Level " + level+1);
+	$("h1").text("Level " + (level+1));
 	gamePattern = [];
 	userChosenPattern = [];
 	for (var i=0; i < level+1; i++){
@@ -80,18 +81,54 @@ function nextSequence(){
 	}
 }
 
+function gameOver(){
+	tries = 3;
+	checkStart = true;
+	level = 0;
+	$("h1").text("Press A Key to Start");
+}
+
 function checkAnswer(){
 	console.log(userChosenPattern);
 	console.log(gamePattern);
+	var delay = 0;
 	if (userChosenPattern.toString() === gamePattern.toString()){
 		level++;
-		$("h1").text("You got it correct!");
+		if (level >= 5){
+			delay = 2000;
+			$("h1").text("You won the game!");
+			$("body").addClass("game-won").flash();
+			setTimeout(function(){
+				$("body").removeClass("game-won");
+			}, delay);
+		}
+		else{
+			$("h1").text("You got it correct!");
+		}
 	} 
 	else{
-		$("h1").text("You got it wrong! Try again");
+		delay=200;
+		tries--;
+		playSound("wrong");
+		$("body").addClass("game-over");
+		if (tries <= 0){
+			$("h1").text("Sorry! You are out of luck, game over!");
+		}
+		else{
+			$("h1").text("You got it wrong! Try again. "+(tries)+ " attempts remaining");
+		}
+		setTimeout(function(){
+			$("body").removeClass("game-over");
+		}, delay);
 	}
 
 	setTimeout(function(){
-		nextSequence();
-	}, 1500);
+		if (tries <= 0 || level >= 5){
+			gameOver();
+			return
+		}
+		else{
+			nextSequence();
+		}
+	}, 1500+delay);
 }
